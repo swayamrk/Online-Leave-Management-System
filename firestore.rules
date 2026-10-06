@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isManager() {
+      return signedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "manager";
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn() && request.auth.uid == userId;
+
+      // Employees can read their own profile. Managers can read profiles for management.
+      allow read: if signedIn() && (request.auth.uid == userId || isManager());
+
+      // Employees cannot promote themselves or change their balance.
+      allow update: if signedIn() && request.auth.uid == userId &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["name", "dept"]);
+
+      // Managers should be promoted through Firebase Console/Admin tooling,
+      // not by a client-side write.
+      allow delete: if false;
+    }
+
+    match /leaves/{leaveId} {
+      // A signed-in employee can create only their own pending request.
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == "Pending";
+
+      // Employees can read their own requests; managers can read team requests.
+      allow read: if signedIn()
+        && (resource.data.userId == request.auth.uid || isManager());
+
+      // Approval/rejection is performed by the manager client using a transaction.
+      // Production deployments should move this mutation to a trusted backend/Cloud Function.
+      allow update: if isManager()
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(["status", "reviewedBy", "reviewedAt"])
+        && request.resource.data.status in ["Approved", "Rejected"]
+        && resource.data.status == "Pending";
+
+      allow delete: if false;
+    }
+  }
+}
