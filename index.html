@@ -125,12 +125,13 @@ import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, ge
    Firebase Console → Project settings → Your apps → Web app
    ========================================================= */
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCz_c4_nBmFCxSBdmebLeJWSxrwjgMr3nw",
+  authDomain: "leaveflow-prod-b23c4.firebaseapp.com",
+  databaseURL: "https://leaveflow-prod-b23c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "leaveflow-prod-b23c4",
+  storageBucket: "leaveflow-prod-b23c4.firebasestorage.app",
+  messagingSenderId: "430317111824",
+  appId: "1:430317111824:web:19b7106e956709beb6d895"
 };
 
 const firebaseApp=initializeApp(firebaseConfig), auth=getAuth(firebaseApp), db=getFirestore(firebaseApp);
