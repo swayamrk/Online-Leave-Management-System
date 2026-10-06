@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LeaveFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --navy:       #0d1b2a;
+  --navy-mid:   #1a2e42;
+  --navy-soft:  #243447;
+  --amber:      #f59e0b;
+  --amber-dim:  #b45309;
+  --amber-pale: #fffbeb;
+  --white:      #ffffff;
+  --off:        #f7f8fa;
+  --line:       #e4e7ec;
+  --line2:      #d0d5dd;
+  --ink:        #101828;
+  --muted:      #667085;
+  --green:      #12b76a;
+  --green-pale: #ecfdf3;
+  --red:        #f04438;
+  --red-pale:   #fef3f2;
+  --gold-pale:  #fffaeb;
+  --gold-text:  #92400e;
+  --r:4px;
+  --sh:0 1px 3px rgba(16,24,40,.10),0 1px 2px rgba(16,24,40,.06);
+  --sh-md:0 4px 8px -2px rgba(16,24,40,.10),0 2px 4px -2px rgba(16,24,40,.06);
+}
+
+body{font-family:'Inter',sans-serif;background:var(--off);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.5}
+
+/* ─── AUTH ─── */
+#auth{
+  min-height:100vh;display:flex;align-items:stretch;
+}
+.auth-left{
+  flex:1;background:var(--navy);display:flex;flex-direction:column;
+  justify-content:space-between;padding:48px;position:relative;overflow:hidden;
+}
+.auth-left::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle 500px at 10% 80%, rgba(245,158,11,.12) 0%, transparent 70%),
+    radial-gradient(circle 300px at 90% 20%, rgba(245,158,11,.06) 0%, transparent 60%);
+}
+.auth-brand{position:relative;z-index:1}
+.auth-brand-name{font-size:22px;font-weight:700;color:var(--white);letter-spacing:-.3px}
+.auth-brand-name span{color:var(--amber)}
+.auth-tagline{margin-top:auto;position:relative;z-index:1}
+.auth-tagline h2{font-size:32px;font-weight:300;color:var(--white);line-height:1.25;margin-bottom:16px}
+.auth-tagline h2 strong{font-weight:700;color:var(--amber)}
+.auth-tagline p{font-size:14px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.7}
+.auth-right{
+  width:480px;display:flex;align-items:center;justify-content:center;
+  padding:48px 40px;background:var(--white);
+}
+.auth-box{width:100%;max-width:360px}
+.auth-box h1{font-size:24px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.auth-box p{font-size:14px;color:var(--muted);margin-bottom:28px}
+.auth-tabs{display:flex;gap:0;border:1px solid var(--line2);border-radius:var(--r);overflow:hidden;margin-bottom:24px}
+.auth-tab{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);background:var(--white);border:none;transition:all .15s}
+.auth-tab.active{background:var(--navy);color:var(--white)}
+
+/* ─── FORM ELEMENTS ─── */
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{
+  width:100%;padding:9px 12px;border:1px solid var(--line2);border-radius:var(--r);
+  font-family:'Inter',sans-serif;font-size:13px;color:var(--ink);background:var(--white);
+  outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.12);
+}
+.fg textarea{resize:vertical}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.err{background:var(--red-pale);color:var(--red);border:1px solid #fecdca;border-radius:var(--r);padding:9px 12px;font-size:13px;margin-bottom:14px;display:none}
+
+/* ─── BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:var(--r);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--amber);color:var(--navy);width:100%}
+.btn-primary:hover{background:#e08e00}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--ink);color:var(--ink)}
+.btn-approve{background:var(--green);color:var(--white)}
+.btn-approve:hover{background:#0da55e}
+.btn-reject{background:var(--white);color:var(--red);border:1px solid #fda29b}
+.btn-reject:hover{background:var(--red-pale)}
+.btn-sm{padding:5px 11px;font-size:12px}
+.btn-nav{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:12px;padding:6px 12px;border-radius:var(--r);cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif;font-weight:500}
+.btn-nav:hover{background:rgba(255,255,255,.14);color:var(--white)}
+
+/* ─── APP SHELL ─── */
+#app{display:none;min-height:100vh;display:none}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  background:var(--navy);display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sb-brand{
+  padding:20px 20px 0;border-bottom:1px solid rgba(255,255,255,.06);
+  padding-bottom:20px;margin-bottom:8px;
+}
+.sb-brand-name{font-size:17px;font-weight:700;color:var(--white);letter-spacing:-.2px}
+.sb-brand-name span{color:var(--amber)}
+.sb-user{
+  padding:12px 16px;margin:0 8px 8px;border-radius:var(--r);
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+}
+.sb-user-name{font-size:13px;font-weight:600;color:var(--white)}
+.sb-user-meta{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;display:flex;align-items:center;gap:6px}
+.role-dot{width:6px;height:6px;border-radius:50%;background:var(--amber)}
+.sb-section{padding:0 16px;margin-bottom:4px;font-size:10px;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:.08em;margin-top:12px}
+.sb-item{
+  display:flex;align-items:center;gap:9px;padding:8px 12px;margin:1px 8px;
+  border-radius:var(--r);font-size:13px;font-weight:500;color:rgba(255,255,255,.5);
+  cursor:pointer;transition:all .15s;position:relative;
+}
+.sb-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.sb-item.active{background:rgba(245,158,11,.12);color:var(--amber)}
+.sb-item.active svg{opacity:1}
+.sb-item svg{opacity:.5;transition:opacity .15s;flex-shrink:0}
+.sb-badge{background:var(--red);color:var(--white);font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;margin-left:auto;line-height:1.5}
+.sb-footer{margin-top:auto;padding:16px}
+
+/* ─── TOPBAR ─── */
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--line);
+  padding:0 28px;height:56px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:50;
+}
+.topbar-title{font-size:15px;font-weight:600;color:var(--ink)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+
+/* ─── CONTENT ─── */
+.content{padding:28px;overflow-y:auto}
+.page{display:none}
+.page.active{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── STATS ─── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.stat{
+  background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:18px 20px;box-shadow:var(--sh);
+}
+.stat-val{font-size:28px;font-weight:700;color:var(--ink);line-height:1;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--muted);font-weight:500}
+.stat-accent{border-top:3px solid var(--amber)}
+.stat-green{border-top:3px solid var(--green)}
+.stat-red{border-top:3px solid var(--red)}
+.stat-blue{border-top:3px solid #2e90fa}
+
+/* ─── CARD ─── */
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-head{padding:14px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.card-head h3{font-size:13px;font-weight:600;color:var(--ink)}
+.card-head small{font-size:12px;color:var(--muted)}
+.card-body{padding:20px}
+
+/* ─── TABLE ─── */
+table{width:100%;border-collapse:collapse}
+thead th{
+  padding:9px 16px;font-size:11px;font-weight:600;color:var(--muted);
+  background:var(--off);border-bottom:1px solid var(--line);text-align:left;
+  letter-spacing:.02em;
+}
+tbody td{padding:12px 16px;font-size:13px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#fafbfc}
+.td-actions{display:flex;gap:6px;align-items:center}
+.td-sub{font-size:11px;color:var(--muted);margin-top:1px}
+
+/* ─── BADGES ─── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600;line-height:1.4}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+.badge-pending{background:var(--gold-pale);color:var(--gold-text)}
+.badge-approved{background:var(--green-pale);color:#027a48}
+.badge-rejected{background:var(--red-pale);color:#b42318}
+
+/* ─── APPLY FORM ─── */
+.form-wrap{max-width:560px}
+.bal-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:22px}
+.bal-chip{
+  background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:12px 14px;box-shadow:var(--sh);
+}
+.bal-type{font-size:11px;color:var(--muted);font-weight:500;text-transform:capitalize}
+.bal-n{font-size:22px;font-weight:700;color:var(--ink);line-height:1;margin:2px 0}
+.bal-sub{font-size:10px;color:var(--muted)}
+.days-hint{
+  padding:9px 12px;background:var(--gold-pale);border:1px solid #fde68a;
+  border-radius:var(--r);font-size:13px;color:var(--gold-text);font-weight:500;
+  margin-bottom:14px;display:none;
+}
+
+/* ─── EMPTY ─── */
+.empty{text-align:center;padding:40px 20px}
+.empty-icon{font-size:32px;margin-bottom:8px}
+.empty p{font-size:13px;color:var(--muted)}
+.empty strong{display:block;font-size:14px;color:var(--ink);margin-bottom:4px}
+
+/* ─── MODAL ─── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(3px);animation:fi .15s ease}
+.modal{background:var(--white);border-radius:8px;width:440px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 40px rgba(0,0,0,.2);animation:su .2s ease}
+@keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{padding:20px 22px 0;display:flex;align-items:flex-start;justify-content:space-between}
+.modal-head h2{font-size:16px;font-weight:700;color:var(--ink)}
+.modal-x{background:none;border:none;cursor:pointer;color:var(--muted);font-size:20px;line-height:1;padding:0 2px;transition:color .15s}
+.modal-x:hover{color:var(--ink)}
+.modal-body{padding:16px 22px}
+.modal-foot{padding:0 22px 20px;display:flex;gap:8px;justify-content:flex-end}
+.det{display:flex;justify-content:space-between;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.det:last-child{border-bottom:none}
+.det-k{color:var(--muted);font-weight:500;font-size:12px}
+
+/* ─── FILTER BAR ─── */
+.filter-bar{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.fbtn{padding:5px 12px;border-radius:var(--r);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--line2);background:var(--white);color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif}
+.fbtn:hover{border-color:var(--ink);color:var(--ink)}
+.fbtn.active{background:var(--navy);border-color:var(--navy);color:var(--white)}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--ink);color:var(--white);
+  padding:10px 16px;border-radius:var(--r);font-size:13px;font-weight:500;
+  z-index:9999;display:flex;align-items:center;gap:8px;
+  animation:su .2s ease;box-shadow:var(--sh-md);max-width:300px;
+}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.er{border-left:3px solid var(--red)}
+
+/* ─── PAGE HEADER ─── */
+.ph{margin-bottom:22px}
+.ph h1{font-size:20px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.ph p{font-size:13px;color:var(--muted)}
+
+/* ─── CALENDAR GRID ─── */
+.team-chips{display:flex;flex-wrap:wrap;gap:8px;padding:16px}
+.team-chip{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;
+  background:var(--off);border:1px solid var(--line);border-radius:var(--r);font-size:12px;
+}
+.chip-av{width:28px;height:28px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:10px;font-weight:700;flex-shrink:0}
+
+@media(max-width:700px){
+  .shell{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .content{padding:16px}
+  .stats{grid-template-columns:1fr 1fr}
+  .frow{grid-template-columns:1fr}
+  .auth-left{display:none}
+  .auth-right{width:100%;padding:32px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ AUTH ═══ -->
+<div id="auth">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="auth-brand-name">Leave<span>Flow</span></div>
+    </div>
+    <div class="auth-tagline">
+      <h2>Leave management<br><strong>without the paperwork.</strong></h2>
+      <p>Apply, approve and track leave requests in real time. Built for teams that move fast.</p>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <h1>Welcome back</h1>
+      <p>Sign in to your account to continue</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" onclick="switchTab('login')">Sign in</button>
+        <button class="auth-tab" onclick="switchTab('register')">Register</button>
+      </div>
+      <div id="auth-err" class="err"></div>
+
+      <div id="login-pane">
+        <div class="fg"><label>Work email</label><input type="email" id="le" placeholder="you@company.com"/></div>
+        <div class="fg"><label>Password</label><input type="password" id="lp" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <button class="btn btn-primary" onclick="doLogin()">Sign in</button>
+      </div>
+
+      <div id="register-pane" style="display:none">
+        <div class="fg"><label>Full name</label><input type="text" id="rn" placeholder="Riya Shah"/></div>
+        <div class="fg"><label>Work email</label><input type="email" id="re" placeholder="riya@company.com"/></div>
+        <div class="fg"><label>Department</label><input type="text" id="rd" placeholder="Engineering, HR, Finance…"/></div>
+        <div class="fg"><label>Role</label>
+          <select id="rr"><option value="employee">Employee</option><option value="manager">Manager</option></select>
+        </div>
+        <div class="fg"><label>Password</label><input type="password" id="rp" placeholder="Min 6 characters"/></div>
+        <button class="btn btn-primary" onclick="doRegister()">Create account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div id="app">
+  <div class="shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-brand" style="padding-top:20px;padding-left:20px;padding-right:20px;padding-bottom:16px">
+        <div class="sb-brand-name">Leave<span>Flow</span></div>
+      </div>
+      <div style="padding:0 8px;margin-bottom:8px">
+        <div class="sb-user">
+          <div class="sb-user-name" id="sb-name">—</div>
+          <div class="sb-user-meta">
+            <span class="role-dot"></span>
+            <span id="sb-role">—</span>
+            <span style="color:rgba(255,255,255,.2)">·</span>
+            <span id="sb-dept" style="font-size:11px;color:rgba(255,255,255,.4)">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sb-section">Navigation</div>
+      <div class="sb-item active" id="si-dash" onclick="go('dash')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="sb-item" id="si-apply" onclick="go('apply')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Apply for leave
+      </div>
+      <div class="sb-item" id="si-mine" onclick="go('mine')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        My requests
+      </div>
+      <div class="sb-item" id="si-manage" onclick="go('manage')" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Manage requests
+        <span class="sb-badge" id="pend-badge" style="display:none">0</span>
+      </div>
+      <div class="sb-item" id="si-team" onclick="go('team')" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Team calendar
+      </div>
+
+      <div class="sb-footer">
+        <button class="btn-nav" onclick="doLogout()" style="width:100%">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div style="display:flex;flex-direction:column;min-height:100vh">
+      <div class="topbar">
+        <span class="topbar-title" id="topbar-title">Dashboard</span>
+        <div class="topbar-right">
+          <span style="font-size:12px;color:var(--muted)" id="topbar-date"></span>
+        </div>
+      </div>
+      <div class="content" style="flex:1">
+
+        <!-- DASHBOARD -->
+        <div class="page active" id="page-dash">
+          <div class="ph">
+            <h1>Good <span id="greeting-time">day</span>, <span id="greeting-name">there</span></h1>
+            <p>Here's a summary of your leave status</p>
+          </div>
+          <div class="stats">
+            <div class="stat stat-accent">
+              <div class="stat-val" id="s-total">—</div>
+              <div class="stat-label">Total balance (days)</div>
+            </div>
+            <div class="stat stat-red">
+              <div class="stat-val" id="s-taken">—</div>
+              <div class="stat-label">Days taken this year</div>
+            </div>
+            <div class="stat stat-blue">
+              <div class="stat-val" id="s-pending">—</div>
+              <div class="stat-label">Pending requests</div>
+            </div>
+            <div class="stat stat-green" id="mgr-stat" style="display:none">
+              <div class="stat-val" id="s-team-pend">—</div>
+              <div class="stat-label">Team awaiting approval</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Recent requests</h3><small id="dash-count"></small></div>
+            <table><thead><tr><th>Leave type</th><th>From</th><th>To</th><th>Days</th><th>Status</th></tr></thead>
+            <tbody id="dash-tbody"></tbody></table>
+          </div>
+        </div>
+
+        <!-- APPLY -->
+        <div class="page" id="page-apply">
+          <div class="ph"><h1>Apply for leave</h1><p>Submit a new leave request</p></div>
+          <div class="bal-row" id="bal-row"></div>
+          <div class="card form-wrap">
+            <div class="card-body">
+              <div class="fg"><label>Leave type</label>
+                <select id="a-type" onchange="calcPre()">
+                  <option value="Annual">Annual leave</option>
+                  <option value="Sick">Sick leave</option>
+                  <option value="Casual">Casual leave</option>
+                  <option value="Emergency">Emergency leave</option>
+                </select>
+              </div>
+              <div class="frow">
+                <div class="fg"><label>From</label><input type="date" id="a-from" onchange="calcPre()"/></div>
+                <div class="fg"><label>To</label><input type="date" id="a-to" onchange="calcPre()"/></div>
+              </div>
+              <div class="fg"><label>Reason</label><textarea id="a-reason" rows="3" placeholder="Brief reason for the leave request…"></textarea></div>
+              <div class="days-hint" id="days-hint"></div>
+              <button class="btn btn-primary" onclick="submitLeave()" style="width:100%">Submit request</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MY REQUESTS -->
+        <div class="page" id="page-mine">
+          <div class="ph"><h1>My requests</h1><p>All your leave applications</p></div>
+          <div class="card">
+            <table><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+            <tbody id="mine-tbody"></tbody></table>
+          </div>
+        </div>
+
+        <!-- MANAGE -->
+        <div class="page" id="page-manage">
+          <div class="ph"><h1>Manage requests</h1><p>Review and action team leave applications</p></div>
+          <div class="filter-bar">
+            <button class="fbtn active" onclick="setF('all',this)">All</button>
+            <button class="fbtn" onclick="setF('Pending',this)">Pending</button>
+            <button class="fbtn" onclick="setF('Approved',this)">Approved</button>
+            <button class="fbtn" onclick="setF('Rejected',this)">Rejected</button>
+          </div>
+          <div class="card">
+            <table><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="mgr-tbody"></tbody></table>
+          </div>
+        </div>
+
+        <!-- TEAM -->
+        <div class="page" id="page-team">
+          <div class="ph"><h1>Team calendar</h1><p>Approved leaves across the team</p></div>
+          <div class="card">
+            <div class="card-head"><h3>On leave / approved</h3><small id="team-count"></small></div>
+            <table><thead><tr><th>Employee</th><th>Department</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead>
+            <tbody id="team-tbody"></tbody></table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-bg" style="display:none">
+  <div class="modal-bg" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="modal-title">Leave details</h2>
+        <button class="modal-x" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-foot" id="modal-foot"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ DATA ═══
+var DB={
+  U:function(){try{return JSON.parse(localStorage.getItem('lf2_u')||'[]')}catch(e){return[]}},
+  L:function(){try{return JSON.parse(localStorage.getItem('lf2_l')||'[]')}catch(e){return[]}},
+  su:function(u){localStorage.setItem('lf2_u',JSON.stringify(u))},
+  sl:function(l){localStorage.setItem('lf2_l',JSON.stringify(l))},
+  byEmail:function(e){return this.U().find(function(u){return u.email===e})},
+  byId:function(id){return this.U().find(function(u){return u.id===id})},
+  addU:function(u){var a=this.U();a.push(u);this.su(a)},
+  addL:function(l){var a=this.L();a.push(l);this.sl(a)},
+  patchL:function(id,p){this.sl(this.L().map(function(l){return l.id===id?Object.assign({},l,p):l}))},
+  patchU:function(id,p){
+    this.su(this.U().map(function(u){return u.id===id?Object.assign({},u,p):u}));
+    if(CU&&CU.id===id)CU=Object.assign({},CU,p);
+  },
+  myL:function(uid){return this.L().filter(function(l){return l.userId===uid}).sort(function(a,b){return b.ts-a.ts})},
+  allL:function(){return this.L().sort(function(a,b){return b.ts-a.ts})}
+};
+
+var CU=null,FILTER='all';
+
+// ═══ UTILS ═══
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function fmt(ts){if(!ts)return'—';return new Date(ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
+function days(f,t){var d=Math.round((new Date(t)-new Date(f))/86400000)+1;return d>0?d:0}
+function initials(n){return n.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()}
+function badge(s){
+  var cls={Pending:'badge-pending',Approved:'badge-approved',Rejected:'badge-rejected'}[s]||'';
+  return'<span class="badge '+cls+'">'+s+'</span>';
+}
+function empty(cols,icon,title,sub){
+  return'<tr><td colspan="'+cols+'"><div class="empty"><div class="empty-icon">'+icon+'</div><strong>'+title+'</strong><p>'+sub+'</p></div></td></tr>';
+}
+function toast(msg,type){
+  var el=document.createElement('div');
+  el.className='toast '+(type==='er'?'er':'ok');
+  el.innerHTML=(type==='er'?'✕ ':'✓ ')+msg;
+  document.body.appendChild(el);
+  setTimeout(function(){el.remove()},3000);
+}
+function showErr(m){var e=document.getElementById('auth-err');e.textContent=m;e.style.display='block'}
+function hideErr(){document.getElementById('auth-err').style.display='none'}
+
+function greet(){
+  var h=new Date().getHours();
+  return h<12?'morning':h<17?'afternoon':'evening';
+}
+
+// ═══ AUTH ═══
+function switchTab(t){
+  document.querySelectorAll('.auth-tab').forEach(function(el,i){
+    el.classList.toggle('active',(t==='login'&&i===0)||(t==='register'&&i===1));
+  });
+  document.getElementById('login-pane').style.display=t==='login'?'block':'none';
+  document.getElementById('register-pane').style.display=t==='register'?'block':'none';
+  document.getElementById('auth-err').style.display='none';
+}
+
+function doLogin(){
+  var e=(document.getElementById('le').value||'').trim().toLowerCase();
+  var p=document.getElementById('lp').value||'';
+  hideErr();
+  if(!e||!p){showErr('Enter your email and password.');return}
+  var u=DB.byEmail(e);
+  if(!u||u.pwd!==p){showErr('Incorrect email or password.');return}
+  CU=u;sessionStorage.setItem('lf2_s',u.id);boot();
+}
+
+function doRegister(){
+  var n=(document.getElementById('rn').value||'').trim();
+  var e=(document.getElementById('re').value||'').trim().toLowerCase();
+  var d=(document.getElementById('rd').value||'').trim();
+  var r=document.getElementById('rr').value;
+  var p=document.getElementById('rp').value||'';
+  hideErr();
+  if(!n||!e||!d||!p){showErr('All fields are required.');return}
+  if(p.length<6){showErr('Password must be at least 6 characters.');return}
+  if(DB.byEmail(e)){showErr('An account with this email already exists.');return}
+  var u={id:uid(),name:n,email:e,dept:d,role:r,pwd:p,
+    bal:{Annual:18,Sick:10,Casual:6,Emergency:3},ts:Date.now()};
+  DB.addU(u);CU=u;sessionStorage.setItem('lf2_s',u.id);
+  toast('Account created. Welcome to LeaveFlow!');
+  boot();
+}
+
+function doLogout(){
+  sessionStorage.removeItem('lf2_s');CU=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('auth').style.display='flex';
+  document.getElementById('le').value='';document.getElementById('lp').value='';
+}
+
+// ═══ BOOT ═══
+function boot(){
+  document.getElementById('auth').style.display='none';
+  document.getElementById('app').style.display='block';
+  // sidebar
+  document.getElementById('sb-name').textContent=CU.name;
+  document.getElementById('sb-role').textContent=CU.role.charAt(0).toUpperCase()+CU.role.slice(1);
+  document.getElementById('sb-dept').textContent=CU.dept;
+  // topbar date
+  document.getElementById('topbar-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  // manager items
+  var isMgr=CU.role==='manager';
+  document.getElementById('si-manage').style.display=isMgr?'flex':'none';
+  document.getElementById('si-team').style.display=isMgr?'flex':'none';
+  document.getElementById('mgr-stat').style.display=isMgr?'block':'none';
+  // date min
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('a-from').min=today;
+  document.getElementById('a-to').min=today;
+  go('dash');
+}
+
+// ═══ NAV ═══
+var PAGE_TITLES={dash:'Dashboard',apply:'Apply for leave',mine:'My requests',manage:'Manage requests',team:'Team calendar'};
+function go(name){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.sb-item').forEach(function(s){s.classList.remove('active')});
+  var pg=document.getElementById('page-'+name);
+  var si=document.getElementById('si-'+name);
+  if(pg)pg.classList.add('active');
+  if(si)si.classList.add('active');
+  document.getElementById('topbar-title').textContent=PAGE_TITLES[name]||'';
+  ({dash:rDash,apply:rApply,mine:rMine,manage:rManage,team:rTeam})[name]&&({dash:rDash,apply:rApply,mine:rMine,manage:rManage,team:rTeam})[name]();
+}
+
+// ═══ DASHBOARD ═══
+function rDash(){
+  var leaves=DB.myL(CU.id);
+  var bal=CU.bal||{};
+  var total=Object.values(bal).reduce(function(a,b){return a+b},0);
+  var taken=leaves.filter(function(l){return l.status==='Approved'}).reduce(function(a,l){return a+l.days},0);
+  var pend=leaves.filter(function(l){return l.status==='Pending'}).length;
+  document.getElementById('greeting-time').textContent=greet();
+  document.getElementById('greeting-name').textContent=CU.name.split(' ')[0];
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-taken').textContent=taken;
+  document.getElementById('s-pending').textContent=pend;
+  if(CU.role==='manager'){
+    var ap=DB.allL().filter(function(l){return l.status==='Pending'}).length;
+    document.getElementById('s-team-pend').textContent=ap;
+    var bd=document.getElementById('pend-badge');
+    bd.textContent=ap;bd.style.display=ap>0?'inline':'none';
+  }
+  var tb=document.getElementById('dash-tbody');
+  document.getElementById('dash-count').textContent=leaves.length+' total';
+  if(!leaves.length){tb.innerHTML=empty(5,'📋','No requests yet','Apply for leave and it will appear here.');return}
+  tb.innerHTML=leaves.slice(0,6).map(function(l){
+    return'<tr><td>'+l.type+'</td><td>'+fmt(l.from)+'</td><td>'+fmt(l.to)+'</td><td>'+l.days+'</td><td>'+badge(l.status)+'</td></tr>';
+  }).join('');
+}
+
+// ═══ APPLY ═══
+function rApply(){
+  var bal=CU.bal||{};
+  document.getElementById('bal-row').innerHTML=Object.entries(bal).map(function(e){
+    return'<div class="bal-chip"><div class="bal-type">'+e[0]+'</div><div class="bal-n">'+e[1]+'</div><div class="bal-sub">days left</div></div>';
+  }).join('');
+  calcPre();
+}
+
+function calcPre(){
+  var f=document.getElementById('a-from').value;
+  var t=document.getElementById('a-to').value;
+  var h=document.getElementById('days-hint');
+  if(f&&t&&t>=f){
+    var d=days(f,t);
+    h.style.display='block';
+    h.textContent='📅 '+d+' day'+(d!==1?'s':'')+' will be requested';
+  } else h.style.display='none';
+}
+
+function submitLeave(){
+  var type=document.getElementById('a-type').value;
+  var from=document.getElementById('a-from').value;
+  var to=document.getElementById('a-to').value;
+  var reason=(document.getElementById('a-reason').value||'').trim();
+  if(!from||!to||!reason){toast('Please fill in all fields.','er');return}
+  if(to<from){toast('End date must be on or after start date.','er');return}
+  var d=days(from,to);
+  var bal=(CU.bal||{})[type]||0;
+  if(d>bal){toast('Only '+bal+' '+type.toLowerCase()+' day'+(bal!==1?'s':'')+' remaining.','er');return}
+  DB.addL({id:uid(),userId:CU.id,userName:CU.name,dept:CU.dept,type:type,
+    from:new Date(from).getTime(),to:new Date(to).getTime(),days:d,reason:reason,
+    status:'Pending',ts:Date.now()});
+  toast('Leave request submitted.');
+  document.getElementById('a-from').value='';
+  document.getElementById('a-to').value='';
+  document.getElementById('a-reason').value='';
+  document.getElementById('days-hint').style.display='none';
+  go('mine');
+}
+
+// ═══ MY REQUESTS ═══
+function rMine(){
+  var leaves=DB.myL(CU.id);
+  var tb=document.getElementById('mine-tbody');
+  if(!leaves.length){tb.innerHTML=empty(7,'📄','No requests yet','Submit your first leave application.');return}
+  tb.innerHTML=leaves.map(function(l){
+    return'<tr><td><strong>'+l.type+'</strong></td><td>'+fmt(l.from)+'</td><td>'+fmt(l.to)+'</td><td>'+l.days+'</td>'
+      +'<td style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted)">'+l.reason+'</td>'
+      +'<td>'+badge(l.status)+'</td>'
+      +'<td><button class="btn btn-ghost btn-sm" onclick="openDet(\''+l.id+'\')">View</button></td></tr>';
+  }).join('');
+}
+
+// ═══ MANAGE ═══
+function rManage(){
+  var all=DB.allL();
+  var list=FILTER==='all'?all:all.filter(function(l){return l.status===FILTER});
+  var tb=document.getElementById('mgr-tbody');
+  if(!list.length){tb.innerHTML=empty(7,'📭','No requests','No '+( FILTER==='all'?'':''+FILTER.toLowerCase()+' ')+'requests found.');return}
+  tb.innerHTML=list.map(function(l){
+    var act=l.status==='Pending'
+      ?'<button class="btn btn-approve btn-sm" onclick="act(\''+l.id+'\',\'Approved\')">Approve</button>'
+        +'<button class="btn btn-reject btn-sm" onclick="act(\''+l.id+'\',\'Rejected\')">Reject</button>'
+      :'<button class="btn btn-ghost btn-sm" onclick="openDet(\''+l.id+'\')">View</button>';
+    return'<tr><td><strong>'+l.userName+'</strong><div class="td-sub">'+l.dept+'</div></td>'
+      +'<td>'+l.type+'</td><td>'+fmt(l.from)+'</td><td>'+fmt(l.to)+'</td><td>'+l.days+'</td>'
+      +'<td>'+badge(l.status)+'</td><td class="td-actions">'+act+'</td></tr>';
+  }).join('');
+}
+
+function setF(f,btn){
+  FILTER=f;
+  document.querySelectorAll('.fbtn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  rManage();
+}
+
+function act(id,status){
+  DB.patchL(id,{status:status,reviewedBy:CU.name,reviewedAt:Date.now()});
+  if(status==='Approved'){
+    var l=DB.L().find(function(x){return x.id===id});
+    if(l){
+      var emp=DB.byId(l.userId);
+      if(emp){var b=Object.assign({},emp.bal);b[l.type]=Math.max(0,(b[l.type]||0)-l.days);DB.patchU(emp.id,{bal:b})}
+    }
+  }
+  toast('Request '+status.toLowerCase()+'.');
+  rManage();
+  // refresh badge
+  var ap=DB.allL().filter(function(l){return l.status==='Pending'}).length;
+  var bd=document.getElementById('pend-badge');
+  bd.textContent=ap;bd.style.display=ap>0?'inline':'none';
+  document.getElementById('s-team-pend').textContent=ap;
+}
+
+// ═══ TEAM ═══
+function rTeam(){
+  var approved=DB.allL().filter(function(l){return l.status==='Approved'});
+  var tb=document.getElementById('team-tbody');
+  document.getElementById('team-count').textContent=approved.length+' approved';
+  if(!approved.length){tb.innerHTML=empty(6,'🗓','No approved leaves','Approved leaves will appear here.');return}
+  tb.innerHTML=approved.map(function(l){
+    return'<tr><td><strong>'+l.userName+'</strong></td><td>'+l.dept+'</td><td>'+l.type+'</td>'
+      +'<td>'+fmt(l.from)+'</td><td>'+fmt(l.to)+'</td><td>'+l.days+'</td></tr>';
+  }).join('');
+}
+
+// ═══ MODAL ═══
+function openDet(id){
+  var l=DB.L().find(function(x){return x.id===id});if(!l)return;
+  document.getElementById('modal-body').innerHTML=
+    '<div class="det"><span class="det-k">Employee</span><span>'+l.userName+'</span></div>'
+   +'<div class="det"><span class="det-k">Department</span><span>'+l.dept+'</span></div>'
+   +'<div class="det"><span class="det-k">Leave type</span><span>'+l.type+'</span></div>'
+   +'<div class="det"><span class="det-k">From</span><span>'+fmt(l.from)+'</span></div>'
+   +'<div class="det"><span class="det-k">To</span><span>'+fmt(l.to)+'</span></div>'
+   +'<div class="det"><span class="det-k">Duration</span><span>'+l.days+' day'+(l.days!==1?'s':'')+'</span></div>'
+   +'<div class="det"><span class="det-k">Reason</span><span style="max-width:260px;text-align:right">'+l.reason+'</span></div>'
+   +'<div class="det"><span class="det-k">Status</span>'+badge(l.status)+'</div>'
+   +(l.reviewedAt?'<div class="det"><span class="det-k">Reviewed by</span><span>'+l.reviewedBy+' · '+fmt(l.reviewedAt)+'</span></div>':'');
+  var foot=document.getElementById('modal-foot');
+  if(CU.role==='manager'&&l.status==='Pending'){
+    foot.innerHTML='<button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>'
+      +'<button class="btn btn-reject btn-sm" onclick="act(\''+l.id+'\',\'Rejected\');closeModal()">Reject</button>'
+      +'<button class="btn btn-approve btn-sm" onclick="act(\''+l.id+'\',\'Approved\');closeModal()">Approve</button>';
+  } else {
+    foot.innerHTML='<button class="btn btn-primary btn-sm" onclick="closeModal()">Close</button>';
+  }
+  document.getElementById('modal-bg').style.display='block';
+}
+function closeModal(){document.getElementById('modal-bg').style.display='none'}
+
+// ═══ INIT ═══
+(function(){
+  var sid=sessionStorage.getItem('lf2_s');
+  if(sid){var u=DB.byId(sid);if(u){CU=u;boot();return}}
+  document.getElementById('auth').style.display='flex';
+  document.getElementById('app').style.display='none';
+})();
+</script>
+</body>
+</html>
