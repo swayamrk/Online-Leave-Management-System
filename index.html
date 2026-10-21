@@ -2,184 +2,267 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0b1220">
-<title>LeaveFlow — Leave Management</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeaveFlow</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,system-ui,sans-serif;color:#172033;background:#f5f7fb}button,input,select,textarea{font:inherit}
-:root{--ink:#172033;--muted:#6b7280;--line:#e6eaf0;--card:#fff;--nav:#0b1220;--nav2:#121c2e;--blue:#3563e9;--blue2:#5b7cfa;--green:#16a06a;--red:#dc4c64;--amber:#d68a00}
-.auth{min-height:100vh;display:grid;place-items:center;padding:28px;background:radial-gradient(circle at 20% 10%,#dce7ff 0,transparent 34%),radial-gradient(circle at 90% 80%,#dff8ed 0,transparent 30%),#f5f7fb}
-.auth-card{width:min(1050px,100%);display:grid;grid-template-columns:1.05fr .95fr;background:#fff;border:1px solid #e6eaf0;border-radius:28px;overflow:hidden;box-shadow:0 25px 70px #18243a18}
-.auth-brand{padding:52px;background:linear-gradient(145deg,#0b1220,#172746);color:#fff;position:relative;overflow:hidden}.auth-brand:after{content:"";position:absolute;width:360px;height:360px;border:1px solid #ffffff18;border-radius:50%;right:-130px;bottom:-140px;box-shadow:0 0 0 70px #ffffff08,0 0 0 140px #ffffff04}
-.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px;letter-spacing:-.5px}.logo-mark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#5b7cfa,#3563e9);color:#fff;font-weight:800}
-.auth-brand h1{font-size:42px;line-height:1.08;letter-spacing:-1.8px;margin:90px 0 18px;max-width:430px}.auth-brand p{color:#b9c4d6;line-height:1.7;max-width:430px}.feature-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px}.feature{padding:9px 12px;border:1px solid #ffffff16;background:#ffffff09;border-radius:999px;color:#dce4f2;font-size:12px}
-.auth-panel{padding:52px;display:flex;flex-direction:column;justify-content:center}.tabs{display:flex;background:#f3f5f8;padding:4px;border-radius:12px;margin-bottom:25px}.tab{flex:1;border:0;background:transparent;padding:11px;border-radius:9px;color:var(--muted);font-weight:700;cursor:pointer}.tab.active{background:#fff;color:var(--ink);box-shadow:0 2px 8px #1b25320e}.auth-panel h2{margin:0 0 8px;font-size:27px;letter-spacing:-.8px}.auth-panel .sub{color:var(--muted);font-size:14px;margin-bottom:24px}.field{margin-bottom:15px}.field label{display:block;font-size:12px;font-weight:700;color:#485266;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid #dfe4ec;border-radius:11px;padding:12px 13px;outline:0;background:#fff;color:var(--ink)}.field input:focus,.field select:focus,.field textarea:focus{border-color:#7d96ee;box-shadow:0 0 0 3px #3563e914}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:0;border-radius:11px;padding:11px 15px;font-weight:700;cursor:pointer}.btn-primary{background:var(--blue);color:#fff;box-shadow:0 7px 18px #3563e92a}.btn-primary:hover{background:#2f58d2}.btn-soft{background:#eef2ff;color:#3158c9}.btn-ghost{background:#f5f6f8;color:#465066}.btn-danger{background:#fff0f2;color:#c63b53}.btn-success{background:#eaf9f2;color:#087a50}.auth-error{display:none;background:#fff0f2;border:1px solid #ffd0d8;color:#bd3149;border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:14px}
-.app{display:none;min-height:100vh}.sidebar{position:fixed;inset:0 auto 0 0;width:244px;background:var(--nav);color:#fff;padding:20px 14px;z-index:20}.brand{padding:8px 10px 25px}.brand .logo-mark{background:linear-gradient(135deg,#5b7cfa,#3563e9)}.brand small{display:block;color:#77839a;font-size:10px;margin:8px 0 0 49px}.nav-label{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;color:#65728a;font-weight:800;padding:10px}.nav{display:grid;gap:4px}.nav-item{display:flex;align-items:center;gap:11px;color:#9ca9bd;text-decoration:none;padding:11px 12px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}.nav-item:hover,.nav-item.active{background:#ffffff0d;color:#fff}.nav-item.active{box-shadow:inset 3px 0 #6f8cff}.nav-icon{width:20px;text-align:center}.sidebar-bottom{position:absolute;left:14px;right:14px;bottom:16px;border-top:1px solid #ffffff10;padding-top:14px}.profile-mini{display:flex;align-items:center;gap:10px;padding:9px}.avatar{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#253454;color:#cbd6ff;font-size:12px;font-weight:800}.profile-mini strong{display:block;font-size:12px}.profile-mini span{font-size:10px;color:#718098}.main{margin-left:244px;min-height:100vh}.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:10}.topbar h1{font-size:17px;margin:0}.topbar-right{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.mobile-menu{display:none}.content{padding:28px;max-width:1450px;margin:auto}.page{display:none}.page.active{display:block}.hero{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px}.hero h2{margin:0 0 5px;font-size:26px;letter-spacing:-1px}.hero p{margin:0;color:var(--muted);font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;position:relative;overflow:hidden}.stat .label{font-size:11px;color:var(--muted);font-weight:700}.stat .num{font-size:29px;font-weight:800;margin-top:8px;letter-spacing:-1px}.stat .icon{position:absolute;right:15px;top:15px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#eef2ff;color:#4263ce}.cards{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.card-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}.card-head h3{margin:0;font-size:14px}.card-head span{font-size:11px;color:var(--muted)}.balance{padding:17px}.balance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.bal{border:1px solid var(--line);border-radius:12px;padding:13px}.bal b{display:block;font-size:19px}.bal span{font-size:10px;color:var(--muted)}.bal em{font-size:10px;color:#65728a;font-style:normal;display:block;margin-top:7px}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;font-size:12px}.table th{background:#fafbfc;color:#7a8494;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:11px 14px;border-bottom:1px solid var(--line)}.table td{padding:13px 14px;border-bottom:1px solid #f0f2f5;vertical-align:middle}.table tr:last-child td{border-bottom:0}.td-sub{font-size:10px;color:var(--muted);margin-top:3px}.badge{display:inline-flex;align-items:center;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}.pending{background:#fff7df;color:#9a6800}.approved{background:#e9f9f1;color:#08774e}.rejected{background:#fff0f2;color:#bd3149}.empty{text-align:center;padding:40px 15px;color:var(--muted)}.empty .ei{font-size:26px;margin-bottom:8px}.empty strong{color:var(--ink);font-size:13px}.empty p{font-size:11px;margin:5px 0}.form-card{max-width:760px}.form-body{padding:20px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-section{margin-bottom:18px}.form-section-title{font-size:12px;font-weight:800;margin-bottom:10px;color:#455067}.hint{display:none;background:#eef4ff;color:#365bc5;padding:10px 12px;border-radius:10px;font-size:12px;margin-bottom:14px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.filters{display:flex;gap:6px;flex-wrap:wrap}.filter{border:1px solid var(--line);background:#fff;color:#687386;border-radius:9px;padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer}.filter.active{background:#eef2ff;border-color:#dce4ff;color:#3158c9}.notice{background:#f7f9fc;border:1px dashed #dbe1ea;border-radius:12px;padding:13px;font-size:11px;color:#667085;margin-bottom:16px}.toast{position:fixed;right:22px;bottom:22px;background:#172033;color:#fff;border-radius:11px;padding:12px 15px;font-size:12px;box-shadow:0 12px 30px #0002;z-index:99}.toast.er{background:#bd3149}.modal{display:none;position:fixed;inset:0;background:#0b122088;z-index:80;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-box{width:min(560px,100%);background:#fff;border-radius:18px;box-shadow:0 25px 80px #0004;overflow:hidden}.modal-head{padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between}.modal-body{padding:20px}.close{border:0;background:#f2f4f7;width:30px;height:30px;border-radius:8px;cursor:pointer}.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.detail label{display:block;color:var(--muted);font-size:10px;margin-bottom:4px}.detail div{font-size:13px;font-weight:700}.mobile-nav{display:none}
-@media(max-width:900px){.sidebar{transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.main{margin-left:0}.mobile-menu{display:grid;width:35px;height:35px;place-items:center;border:0;background:#f1f3f7;border-radius:9px}.topbar{padding:0 17px}.content{padding:18px}.stats{grid-template-columns:1fr 1fr}.cards{grid-template-columns:1fr}.auth-card{grid-template-columns:1fr}.auth-brand{display:none}}
-@media(max-width:600px){.hero{display:block}.hero .btn{margin-top:15px}.stats{grid-template-columns:1fr 1fr}.balance-grid{grid-template-columns:1fr 1fr}.form-row,.grid2,.detail-grid{grid-template-columns:1fr}.table{min-width:700px}.auth-panel{padding:30px 22px}.content{padding:14px}.topbar{height:60px}.topbar-right{display:none}}
+:root{--bg:#F2F4F7;--card:#fff;--ink:#17202B;--mute:#5F6B7A;--line:#DDE2E8;--brand:#24527A;--brand-ink:#fff;--ok:#1F7A4D;--okbg:#E2F3EA;--no:#B3261E;--nobg:#FBE6E4;--wait:#8A5A00;--waitbg:#FFF1D1;--off:#59636F;--offbg:#E8EBEF}
+@media(prefers-color-scheme:dark){:root{--bg:#10161D;--card:#18212B;--ink:#E8EDF3;--mute:#9AA6B4;--line:#2A3644;--brand:#6FA8DC;--brand-ink:#0C1218;--ok:#6FD3A0;--okbg:#14301F;--no:#FF8F86;--nobg:#3A1A18;--wait:#F2C46B;--waitbg:#35290D;--off:#A9B3BF;--offbg:#242F3B}}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Public Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.hide{display:none!important}
+.auth{min-height:100vh;display:grid;place-items:center;padding:20px}
+.auth-box{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:28px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:20px;margin:0 0 16px}
+.sub{color:var(--mute);margin:0 0 20px}
+.tabs{display:flex;gap:4px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;padding:8px 12px;cursor:pointer;color:var(--mute);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--ink);border-color:var(--brand);font-weight:600}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:var(--card)}
+.btn{background:var(--brand);color:var(--brand-ink);border:0;border-radius:6px;padding:9px 16px;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn.ok{background:var(--ok);color:var(--card)}
+.btn.no{background:var(--no);color:var(--card)}
+.auth-box .btn{width:100%;margin-top:18px}
+.msg{margin-top:12px;font-size:13px;color:var(--no)}
+.warn{background:var(--waitbg);color:var(--wait);padding:10px 12px;border-radius:6px;font-size:13px;margin-bottom:16px}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+aside{background:var(--card);border-right:1px solid var(--line);padding:20px 12px;display:flex;flex-direction:column;gap:2px}
+aside .logo{font-weight:700;font-size:18px;padding:0 10px 16px}
+aside .who{margin-top:auto;padding:12px 10px 0;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+aside .who b{display:block;color:var(--ink)}
+.nav{background:none;border:0;text-align:left;padding:9px 10px;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.nav:hover{background:var(--bg)}.nav.on{background:var(--bg);font-weight:600}
+.badge{background:var(--no);color:var(--card);border-radius:10px;font-size:11px;padding:1px 7px;font-weight:700}
+main{padding:28px;max-width:980px;width:100%}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px}
+.stat .n{font-size:28px;font-weight:700;line-height:1.1}.stat .l{color:var(--mute);font-size:13px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:20px}
+.panel.narrow{max-width:520px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--mute);font-weight:600}
+tr:last-child td{border-bottom:0}
+.pill{padding:2px 9px;border-radius:10px;font-size:12px;font-weight:600;white-space:nowrap}
+.pending{background:var(--waitbg);color:var(--wait)}.approved{background:var(--okbg);color:var(--ok)}
+.rejected{background:var(--nobg);color:var(--no)}.cancelled{background:var(--offbg);color:var(--off)}
+.empty{color:var(--mute);padding:8px 0}
+.acts{display:flex;gap:6px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:6px;font-size:14px}
+@media(max-width:720px){.shell{grid-template-columns:1fr}aside{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);padding:10px}aside .logo{width:100%;padding-bottom:6px}aside .who{margin:0;border:0;width:100%}main{padding:16px}.row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<section class="auth" id="auth">
-  <div class="auth-card">
-    <div class="auth-brand">
-      <div class="logo"><span class="logo-mark">LF</span> LeaveFlow</div>
-      <h1>Leave management without the paperwork.</h1>
-      <p>Track leave balances, submit requests and manage approvals from one clean workspace.</p>
-      <div class="feature-row"><span class="feature">Firebase secured</span><span class="feature">Real-time database</span><span class="feature">Vercel ready</span></div>
-    </div>
-    <div class="auth-panel">
-      <div class="tabs"><button class="tab active" onclick="switchTab('login')">Sign in</button><button class="tab" onclick="switchTab('register')">Create account</button></div>
-      <div id="auth-error" class="auth-error"></div>
-      <div id="login-pane">
-        <h2>Welcome back</h2><p class="sub">Sign in to continue to your workspace.</p>
-        <div class="field"><label>Work email</label><input id="login-email" type="email" autocomplete="email" placeholder="you@company.com"></div>
-        <div class="field"><label>Password</label><input id="login-password" type="password" autocomplete="current-password" placeholder="••••••••"></div>
-        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Sign in</button>
-      </div>
-      <div id="register-pane" style="display:none">
-        <h2>Create your account</h2><p class="sub">New accounts are created as employees. Managers are assigned securely by an administrator.</p>
-        <div class="grid2"><div class="field"><label>Full name</label><input id="reg-name" placeholder="Your name"></div><div class="field"><label>Department</label><input id="reg-dept" placeholder="Engineering"></div></div>
-        <div class="field"><label>Work email</label><input id="reg-email" type="email" placeholder="you@company.com"></div>
-        <div class="field"><label>Password</label><input id="reg-password" type="password" placeholder="At least 6 characters"></div>
-        <button class="btn btn-primary" style="width:100%" onclick="doRegister()">Create account</button>
-      </div>
-    </div>
+<section id="auth" class="auth hide">
+  <div class="auth-box">
+    <h1>LeaveFlow</h1>
+    <p class="sub">Apply for leave. Get approvals fast.</p>
+    <div id="cfgwarn" class="warn hide">Firebase isn’t configured yet. Paste your config into the <code>firebaseConfig</code> block in index.html.</div>
+    <div class="tabs"><button id="t-in" class="on" type="button">Sign in</button><button id="t-up" type="button">Create account</button></div>
+    <div id="f-name-w" class="hide"><label for="f-name">Full name</label><input id="f-name" autocomplete="name"></div>
+    <label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email">
+    <label for="f-pass">Password</label><input id="f-pass" type="password" autocomplete="current-password" placeholder="At least 6 characters">
+    <div id="f-role-w" class="hide"><label for="f-role">Role</label>
+      <select id="f-role"><option value="employee">Employee</option><option value="manager">Manager</option></select></div>
+    <button id="f-go" class="btn" type="button">Sign in</button>
+    <div id="f-msg" class="msg" role="alert"></div>
   </div>
 </section>
 
-<section class="app" id="app">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="logo"><span class="logo-mark">LF</span> LeaveFlow</div><small>LEAVE MANAGEMENT</small></div>
-    <div class="nav-label">Workspace</div>
-    <nav class="nav">
-      <a class="nav-item active" id="nav-dash" onclick="go('dash')"><span class="nav-icon">⌂</span> Dashboard</a>
-      <a class="nav-item" id="nav-apply" onclick="go('apply')"><span class="nav-icon">＋</span> Apply for leave</a>
-      <a class="nav-item" id="nav-mine" onclick="go('mine')"><span class="nav-icon">▤</span> My requests</a>
-      <a class="nav-item" id="nav-manage" onclick="go('manage')" style="display:none"><span class="nav-icon">✓</span> Manage requests <b id="pending-badge" style="display:none;margin-left:auto;background:#ef6478;color:#fff;border-radius:99px;padding:2px 6px;font-size:9px"></b></a>
-      <a class="nav-item" id="nav-team" onclick="go('team')" style="display:none"><span class="nav-icon">◫</span> Team calendar</a>
-    </nav>
-    <div class="sidebar-bottom"><div class="profile-mini"><div class="avatar" id="side-avatar">--</div><div style="min-width:0"><strong id="side-name">User</strong><span id="side-meta">Employee</span></div><button class="btn btn-ghost" style="margin-left:auto;padding:6px 8px" onclick="logout()">↪</button></div></div>
-  </aside>
-
-  <main class="main">
-    <header class="topbar"><div style="display:flex;align-items:center;gap:10px"><button class="mobile-menu" onclick="toggleSidebar()">☰</button><h1 id="page-title">Dashboard</h1></div><div class="topbar-right"><span id="top-date"></span><span>•</span><strong id="top-user"></strong></div></header>
-    <div class="content">
-
-      <section class="page active" id="page-dash">
-        <div class="hero"><div><h2>Good <span id="greeting">day</span>, <span id="first-name">there</span>.</h2><p>Here's what's happening with your leave.</p></div><button class="btn btn-primary" onclick="go('apply')">＋ Apply for leave</button></div>
-        <div class="stats">
-          <div class="stat"><span class="label">AVAILABLE DAYS</span><div class="num" id="stat-total">—</div><div class="icon">◷</div></div>
-          <div class="stat"><span class="label">DAYS TAKEN</span><div class="num" id="stat-taken">—</div><div class="icon">✓</div></div>
-          <div class="stat"><span class="label">PENDING REQUESTS</span><div class="num" id="stat-pending">—</div><div class="icon">◌</div></div>
-          <div class="stat" id="manager-stat" style="display:none"><span class="label">TEAM PENDING</span><div class="num" id="stat-team">—</div><div class="icon">♧</div></div>
-        </div>
-        <div class="cards">
-          <div class="card"><div class="card-head"><h3>Recent requests</h3><span id="recent-count"></span></div><div class="table-wrap"><table class="table"><thead><tr><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Status</th></tr></thead><tbody id="recent-body"></tbody></table></div></div>
-          <div class="card"><div class="card-head"><h3>Leave balance</h3><span>Days remaining</span></div><div class="balance"><div class="balance-grid" id="balance-grid"></div></div></div>
-        </div>
-      </section>
-
-      <section class="page" id="page-apply">
-        <div class="hero"><div><h2>Apply for leave</h2><p>Choose your dates and submit a request for approval.</p></div></div>
-        <div class="card form-card"><div class="form-body">
-          <div class="notice">Your request will remain <b>Pending</b> until a manager reviews it. Approved leave is deducted from your balance automatically.</div>
-          <div class="form-section"><div class="form-section-title">Leave details</div><div class="form-row"><div class="field"><label>Leave type</label><select id="leave-type"><option>Annual</option><option>Sick</option><option>Casual</option><option>Emergency</option></select></div><div class="field"><label>Reason</label><input id="leave-reason" placeholder="Brief reason"></div></div></div>
-          <div class="form-section"><div class="form-section-title">Dates</div><div class="form-row"><div class="field"><label>From</label><input id="leave-from" type="date" onchange="calcDays()"></div><div class="field"><label>To</label><input id="leave-to" type="date" onchange="calcDays()"></div></div></div>
-          <div class="hint" id="days-hint"></div>
-          <div class="actions"><button class="btn btn-ghost" onclick="go('dash')">Cancel</button><button class="btn btn-primary" onclick="submitLeave()">Submit request</button></div>
-        </div></div>
-      </section>
-
-      <section class="page" id="page-mine">
-        <div class="hero"><div><h2>My requests</h2><p>View your submitted leave applications.</p></div><button class="btn btn-primary" onclick="go('apply')">＋ New request</button></div>
-        <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Leave</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody id="mine-body"></tbody></table></div></div>
-      </section>
-
-      <section class="page" id="page-manage">
-        <div class="hero"><div><h2>Manage requests</h2><p>Review leave applications from your team.</p></div><div class="filters"><button class="filter active" onclick="setFilter('all',this)">All</button><button class="filter" onclick="setFilter('Pending',this)">Pending</button><button class="filter" onclick="setFilter('Approved',this)">Approved</button><button class="filter" onclick="setFilter('Rejected',this)">Rejected</button></div></div>
-        <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Employee</th><th>Leave</th><th>From</th><th>To</th><th>Days</th><th>Status</th><th>Actions</th></tr></thead><tbody id="manage-body"></tbody></table></div></div>
-      </section>
-
-      <section class="page" id="page-team">
-        <div class="hero"><div><h2>Team calendar</h2><p>Approved leave across your team.</p></div></div>
-        <div class="card"><div class="card-head"><h3>Approved leave</h3><span id="team-count"></span></div><div class="table-wrap"><table class="table"><thead><tr><th>Employee</th><th>Department</th><th>Leave</th><th>From</th><th>To</th><th>Days</th></tr></thead><tbody id="team-body"></tbody></table></div></div>
-      </section>
-    </div>
-  </main>
-</section>
-
-<div class="modal" id="detail-modal" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-head"><strong>Leave request</strong><button class="close" onclick="closeModal()">×</button></div><div class="modal-body" id="detail-body"></div></div></div>
-<div id="toast-root"></div>
+<div id="app" class="shell hide">
+  <aside id="side"></aside>
+  <main id="main"></main>
+</div>
+<div id="loading" class="auth">Loading…</div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, getDocs, updateDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,addDoc,collection,query,where,onSnapshot,increment} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* =========================================================
-   FIREBASE CONFIG — PASTE YOUR FIREBASE WEB APP CONFIG HERE
-   Firebase Console → Project settings → Your apps → Web app
-   ========================================================= */
+// ===== 1. PASTE YOUR FIREBASE CONFIG HERE (Project settings > Your apps > Web) =====
 const firebaseConfig = {
-  apiKey: "AIzaSyCz_c4_nBmFCxSBdmebLeJWSxrwjgMr3nw",
-  authDomain: "leaveflow-prod-b23c4.firebaseapp.com",
-  databaseURL: "https://leaveflow-prod-b23c4-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "leaveflow-prod-b23c4",
-  storageBucket: "leaveflow-prod-b23c4.firebasestorage.app",
-  messagingSenderId: "430317111824",
-  appId: "1:430317111824:web:19b7106e956709beb6d895"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
+// ==================================================================================
 
-const firebaseApp=initializeApp(firebaseConfig), auth=getAuth(firebaseApp), db=getFirestore(firebaseApp);
-let currentUser=null, profile=null, currentFilter="all", allLeaves=[];
+const TYPES = {annual:"Annual",sick:"Sick",casual:"Casual"};
+const START = {annual:20,sick:10,casual:7};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = d => new Date(d+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});
+const pill = s => `<span class="pill ${s}">${s[0].toUpperCase()+s.slice(1)}</span>`;
+const show = id => { ["auth","app","loading"].forEach(x=>$("#"+x).classList.toggle("hide",x!==id)); };
+const toast = t => { const e=document.createElement("div"); e.className="toast"; e.textContent=t; document.body.append(e); setTimeout(()=>e.remove(),2600); };
 
-const $=id=>document.getElementById(id);
-const titles={dash:"Dashboard",apply:"Apply for leave",mine:"My requests",manage:"Manage requests",team:"Team calendar"};
-const initials=n=>(n||"U").split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase();
-const formatDate=v=>{if(!v)return "—";const d=v.toDate?v.toDate():new Date(v);return d.toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})};
-const countDays=(a,b)=>Math.floor((new Date(b)-new Date(a))/86400000)+1;
-const statusBadge=s=>`<span class="badge ${s==="Pending"?"pending":s==="Approved"?"approved":"rejected"}">${s}</span>`;
-const empty=(icon,title,sub,cols)=>`<tr><td colspan="${cols}"><div class="empty"><div class="ei">${icon}</div><strong>${title}</strong><p>${sub}</p></div></td></tr>`;
-const toast=(m,error=false)=>{const x=document.createElement("div");x.className="toast"+(error?" er":"");x.textContent=(error?"✕ ":"✓ ")+m;document.body.appendChild(x);setTimeout(()=>x.remove(),3000)};
-function authError(e){return ({ "auth/invalid-credential":"Incorrect email or password.","auth/email-already-in-use":"An account with this email already exists.","auth/invalid-email":"Enter a valid email address.","auth/weak-password":"Password must be at least 6 characters.","auth/network-request-failed":"Network error. Check your connection."}[e.code]||e.message||"Something went wrong.");}
-function showAuthError(m){$("auth-error").textContent=m;$("auth-error").style.display="block";}
-function hideAuthError(){$("auth-error").style.display="none";}
+if (firebaseConfig.apiKey.startsWith("YOUR")) { $("#cfgwarn").classList.remove("hide"); show("auth"); }
+const fb = firebaseConfig.apiKey.startsWith("YOUR") ? null : initializeApp(firebaseConfig);
+const auth = fb && getAuth(fb), db = fb && getFirestore(fb);
 
-window.switchTab=t=>{document.querySelectorAll(".tab").forEach((x,i)=>x.classList.toggle("active",(t==="login"&&i===0)||(t==="register"&&i===1)));$("login-pane").style.display=t==="login"?"block":"none";$("register-pane").style.display=t==="register"?"block":"none";hideAuthError();};
-window.doLogin=async()=>{hideAuthError();const email=$("login-email").value.trim().toLowerCase(),password=$("login-password").value;if(!email||!password)return showAuthError("Enter your email and password.");try{await signInWithEmailAndPassword(auth,email,password)}catch(e){showAuthError(authError(e))}};
-window.doRegister=async()=>{hideAuthError();const name=$("reg-name").value.trim(),dept=$("reg-dept").value.trim(),email=$("reg-email").value.trim().toLowerCase(),password=$("reg-password").value;if(!name||!dept||!email||!password)return showAuthError("Complete all fields.");if(password.length<6)return showAuthError("Password must be at least 6 characters.");try{const c=await createUserWithEmailAndPassword(auth,email,password);await setDoc(doc(db,"users",c.user.uid),{name,email,dept,role:"employee",bal:{Annual:18,Sick:10,Casual:6,Emergency:3},createdAt:serverTimestamp()});toast("Account created successfully.")}catch(e){showAuthError(authError(e))}};
-window.logout=()=>signOut(auth);
-window.toggleSidebar=()=>$("sidebar").classList.toggle("open");
+let me = null, leaves = [], view = "dash", unsub = null, signingUp = false, mode = "in";
 
-async function loadProfile(u){const s=await getDoc(doc(db,"users",u.uid));if(!s.exists()){showAuthError("User profile not found.");await signOut(auth);return}currentUser=u;profile={id:u.uid,...s.data()};$("auth").style.display="none";$("app").style.display="block";$("side-name").textContent=profile.name;$("side-meta").textContent=`${profile.role==="manager"?"Manager":"Employee"} · ${profile.dept}`;$("side-avatar").textContent=initials(profile.name);$("top-user").textContent=profile.name;$("top-date").textContent=new Date().toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"});$("nav-manage").style.display=profile.role==="manager"?"flex":"none";$("nav-team").style.display=profile.role==="manager"?"flex":"none";$("manager-stat").style.display=profile.role==="manager"?"block":"none";const today=new Date().toISOString().slice(0,10);$("leave-from").min=today;$("leave-to").min=today;go("dash");}
-onAuthStateChanged(auth,u=>{if(u)loadProfile(u);else{$("auth").style.display="grid";$("app").style.display="none";}});
+/* ---------- Auth screen ---------- */
+function setMode(m){
+  mode=m;
+  $("#t-in").classList.toggle("on",m==="in"); $("#t-up").classList.toggle("on",m==="up");
+  ["f-name-w","f-role-w"].forEach(i=>$("#"+i).classList.toggle("hide",m==="in"));
+  $("#f-go").textContent = m==="in" ? "Sign in" : "Create account";
+  $("#f-pass").autocomplete = m==="in" ? "current-password" : "new-password";
+  $("#f-msg").textContent="";
+}
+$("#t-in").onclick=()=>setMode("in"); $("#t-up").onclick=()=>setMode("up");
+["f-email","f-pass","f-name"].forEach(i=>$("#"+i).addEventListener("keydown",e=>{if(e.key==="Enter")$("#f-go").click()}));
 
-window.go=async name=>{if(name==="manage"||name==="team"){if(profile?.role!=="manager")return toast("Manager access required.",true)}document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));$("page-"+name).classList.add("active");$("nav-"+name).classList.add("active");$("page-title").textContent=titles[name];$("sidebar").classList.remove("open");if(name==="dash")await renderDashboard();if(name==="apply")renderApply();if(name==="mine")await renderMine();if(name==="manage")await renderManage();if(name==="team")await renderTeam();};
+$("#f-go").onclick = async () => {
+  if(!auth) return;
+  const email=$("#f-email").value.trim(), pass=$("#f-pass").value, msg=$("#f-msg"), btn=$("#f-go");
+  msg.textContent="";
+  if(!email||!pass){ msg.textContent="Enter your email and password."; return; }
+  btn.disabled=true;
+  try{
+    if(mode==="in"){ await signInWithEmailAndPassword(auth,email,pass); }
+    else{
+      const name=$("#f-name").value.trim();
+      if(!name){ msg.textContent="Enter your full name."; btn.disabled=false; return; }
+      signingUp=true;  // stops onAuthStateChanged from reading the profile before it exists
+      const cred=await createUserWithEmailAndPassword(auth,email,pass);
+      await setDoc(doc(db,"users",cred.user.uid),{name,email,role:$("#f-role").value,balances:{...START},createdAt:Date.now()});
+      signingUp=false;
+      await boot(cred.user);
+    }
+  }catch(e){ signingUp=false; msg.textContent=friendly(e); }
+  btn.disabled=false;
+};
+function friendly(e){
+  const m={"auth/invalid-credential":"Wrong email or password.","auth/email-already-in-use":"That email already has an account. Sign in instead.","auth/weak-password":"Use a password with at least 6 characters.","auth/invalid-email":"Enter a valid email address.","auth/operation-not-allowed":"Enable Email/Password sign-in in the Firebase console.","permission-denied":"Firestore rules blocked this. Publish firestore.rules."};
+  return m[e.code]||e.message;
+}
 
-async function myLeaves(){const q=query(collection(db,"leaves"),where("userId","==",profile.id));const s=await getDocs(q);return s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));}
-async function teamLeaves(){const s=await getDocs(collection(db,"leaves"));return s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0));}
+/* ---------- Session ---------- */
+if(auth) onAuthStateChanged(auth, async u => {
+  if(signingUp) return;
+  if(!u){ if(unsub)unsub(); me=null; show("auth"); return; }
+  await boot(u);
+});
 
-async function renderDashboard(){const ls=await myLeaves(),bal=profile.bal||{},total=Object.values(bal).reduce((a,b)=>a+(Number(b)||0),0),taken=ls.filter(x=>x.status==="Approved").reduce((a,b)=>a+b.days,0),pending=ls.filter(x=>x.status==="Pending").length;const h=new Date().getHours();$("greeting").textContent=h<12?"morning":h<17?"afternoon":"evening";$("first-name").textContent=(profile.name||"there").split(" ")[0];$("stat-total").textContent=total;$("stat-taken").textContent=taken;$("stat-pending").textContent=pending;$("recent-count").textContent=`${ls.length} total`;$("recent-body").innerHTML=ls.length?ls.slice(0,6).map(x=>`<tr><td>${x.type}</td><td>${formatDate(x.from)}</td><td>${formatDate(x.to)}</td><td>${x.days}</td><td>${statusBadge(x.status)}</td></tr>`).join(""):empty("📄","No requests yet","Submit your first leave application.",5);$("balance-grid").innerHTML=Object.entries(bal).map(([k,v])=>`<div class="bal"><b>${v}</b><span>${k}</span><em>days remaining</em></div>`).join("");if(profile.role==="manager"){allLeaves=await teamLeaves();const p=allLeaves.filter(x=>x.status==="Pending").length;$("stat-team").textContent=p;$("pending-badge").textContent=p;$("pending-badge").style.display=p?"inline":"none";}}
+async function boot(u){
+  let snap=null;
+  for(let i=0;i<5;i++){ snap=await getDoc(doc(db,"users",u.uid)); if(snap.exists())break; await new Promise(r=>setTimeout(r,500)); }
+  if(!snap||!snap.exists()){ await signOut(auth); $("#f-msg").textContent="Profile not found. Create your account again."; show("auth"); return; }
+  me={uid:u.uid,...snap.data()};
+  view="dash"; show("app"); listen();
+}
 
-function renderApply(){const bal=profile.bal||{};$("leave-type").innerHTML=Object.keys(bal).map(x=>`<option>${x}</option>`).join("");calcDays();}
-window.calcDays=()=>{const a=$("leave-from").value,b=$("leave-to").value;if(a&&b&&b>=a){const n=countDays(a,b);$("days-hint").style.display="block";$("days-hint").textContent=`📅 ${n} day${n===1?"":"s"} will be requested.`}else $("days-hint").style.display="none";};
-window.submitLeave=async()=>{const type=$("leave-type").value,from=$("leave-from").value,to=$("leave-to").value,reason=$("leave-reason").value.trim();if(!from||!to||!reason)return toast("Complete all leave fields.",true);if(to<from)return toast("End date must be on or after start date.",true);const n=countDays(from,to),available=Number(profile.bal?.[type]||0);if(n>available)return toast(`Only ${available} ${type.toLowerCase()} day(s) remain.`,true);try{await addDoc(collection(db,"leaves"),{userId:profile.id,userName:profile.name,dept:profile.dept,type,from,to,days:n,reason,status:"Pending",ts:serverTimestamp()});toast("Leave request submitted.");$("leave-from").value="";$("leave-to").value="";$("leave-reason").value="";go("mine")}catch(e){toast("Could not submit the request.",true)}};
+// Single-field queries only, so no composite indexes are needed. Sorting happens in the browser.
+function listen(){
+  if(unsub)unsub();
+  const q = me.role==="manager" ? collection(db,"leaves") : query(collection(db,"leaves"),where("uid","==",me.uid));
+  unsub=onSnapshot(q,async s=>{
+    leaves=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt);
+    const fresh=await getDoc(doc(db,"users",me.uid)); if(fresh.exists()) me={uid:me.uid,...fresh.data()};
+    render();
+  },e=>toast(friendly(e)));
+}
 
-async function renderMine(){const ls=await myLeaves();$("mine-body").innerHTML=ls.length?ls.map(x=>`<tr><td><b>${x.type}</b></td><td>${formatDate(x.from)}</td><td>${formatDate(x.to)}</td><td>${x.days}</td><td>${x.reason}</td><td>${statusBadge(x.status)}</td><td><button class="btn btn-ghost" style="padding:7px 9px;font-size:10px" onclick="openDetail('${x.id}')">View</button></td></tr>`).join(""):empty("📄","No requests yet","Your applications will appear here.",7);}
+/* ---------- Views ---------- */
+const mgr = () => me.role==="manager";
+const pendingCount = () => leaves.filter(l=>l.status==="pending").length;
 
-window.setFilter=(f,b)=>{currentFilter=f;document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderManage()};
-async function renderManage(){allLeaves=await teamLeaves();const ls=currentFilter==="all"?allLeaves:allLeaves.filter(x=>x.status===currentFilter);$("manage-body").innerHTML=ls.length?ls.map(x=>`<tr><td><b>${x.userName}</b><div class="td-sub">${x.dept}</div></td><td>${x.type}</td><td>${formatDate(x.from)}</td><td>${formatDate(x.to)}</td><td>${x.days}</td><td>${statusBadge(x.status)}</td><td>${x.status==="Pending"?`<button class="btn btn-success" style="padding:7px 9px;font-size:10px" onclick="review('${x.id}','Approved')">Approve</button> <button class="btn btn-danger" style="padding:7px 9px;font-size:10px" onclick="review('${x.id}','Rejected')">Reject</button>`:`<button class="btn btn-ghost" style="padding:7px 9px;font-size:10px" onclick="openDetail('${x.id}')">View</button>`}</td></tr>`).join(""):empty("📭","No requests","There are no matching requests.",7);}
+function render(){
+  const nav=[["dash","Dashboard"],["apply","Apply for leave"],["mine","My leaves"]];
+  if(mgr()) nav.push(["req","Requests",pendingCount()],["cal","Team calendar"]);
+  $("#side").innerHTML=`<div class="logo">LeaveFlow</div>`+nav.map(([k,l,n])=>
+    `<button class="nav ${view===k?"on":""}" data-view="${k}">${l}${n?`<span class="badge">${n}</span>`:""}</button>`).join("")+
+    `<div class="who"><b>${esc(me.name)}</b>${mgr()?"Manager":"Employee"}<br><button class="btn ghost sm" id="out" style="margin-top:8px">Sign out</button></div>`;
+  $("#main").innerHTML=({dash,apply,mine,req,cal})[view]();
+  if(view==="apply") bindApply();
+}
 
-window.review=async(id,status)=>{if(profile.role!=="manager")return toast("Manager access required.",true);try{await runTransaction(db,async tx=>{const lr=doc(db,"leaves",id),ls=await tx.get(lr);if(!ls.exists())throw new Error("Request not found.");const l=ls.data();if(l.status!=="Pending")throw new Error("This request has already been reviewed.");if(status==="Approved"){const ur=doc(db,"users",l.userId),us=await tx.get(ur);if(!us.exists())throw new Error("Employee profile not found.");const bal={...(us.data().bal||{})},left=Number(bal[l.type]||0)-Number(l.days);if(left<0)throw new Error("Insufficient leave balance.");bal[l.type]=left;tx.update(ur,{bal})}tx.update(lr,{status,reviewedBy:profile.name,reviewedAt:serverTimestamp()})});toast(`Request ${status.toLowerCase()}.`);await renderManage();renderDashboard()}catch(e){toast(e.message||"Unable to update request.",true)}};
+function dash(){
+  const mine=leaves.filter(l=>l.uid===me.uid);
+  const bal=Object.keys(TYPES).map(k=>`<div class="stat"><div class="n">${me.balances?.[k]??0}</div><div class="l">${TYPES[k]} days left</div></div>`).join("");
+  const mgrStats=mgr()?`<div class="stat"><div class="n">${pendingCount()}</div><div class="l">Requests waiting</div></div>`:"";
+  return `<h2>Hello, ${esc(me.name.split(" ")[0])}</h2><div class="stats">${bal}${mgrStats}</div>
+  <div class="panel"><b>Recent requests</b>${table(mine.slice(0,5),false)}</div>`;
+}
 
-async function renderTeam(){const ls=(await teamLeaves()).filter(x=>x.status==="Approved");$("team-count").textContent=`${ls.length} approved`;$("team-body").innerHTML=ls.length?ls.map(x=>`<tr><td><b>${x.userName}</b></td><td>${x.dept}</td><td>${x.type}</td><td>${formatDate(x.from)}</td><td>${formatDate(x.to)}</td><td>${x.days}</td></tr>`).join(""):empty("🗓","No approved leave","Approved team leave will appear here.",6);}
+function table(list,withActions){
+  if(!list.length) return `<p class="empty">Nothing here yet.</p>`;
+  return `<div class="tw"><table><thead><tr>${withActions?"<th>Employee</th>":""}<th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>`+
+  list.map(l=>`<tr>${withActions?`<td>${esc(l.name)}</td>`:""}<td>${TYPES[l.type]}</td><td>${fmt(l.from)} to ${fmt(l.to)}</td><td>${l.days}</td><td>${esc(l.reason)}</td><td>${pill(l.status)}</td>
+  <td><div class="acts">${
+    withActions&&l.status==="pending" ? `<button class="btn ok sm" data-act="approved" data-id="${l.id}">Approve</button><button class="btn no sm" data-act="rejected" data-id="${l.id}">Reject</button>`
+    : !withActions&&l.status==="pending" ? `<button class="btn ghost sm" data-cancel="${l.id}">Cancel</button>` : ""}</div></td></tr>`).join("")+`</tbody></table></div>`;
+}
 
-window.openDetail=async id=>{const ls=profile.role==="manager"?await teamLeaves():await myLeaves(),x=ls.find(a=>a.id===id);if(!x)return;$("detail-body").innerHTML=`<div class="detail-grid"><div class="detail"><label>Employee</label><div>${x.userName}</div></div><div class="detail"><label>Department</label><div>${x.dept}</div></div><div class="detail"><label>Leave type</label><div>${x.type}</div></div><div class="detail"><label>Status</label><div>${statusBadge(x.status)}</div></div><div class="detail"><label>From</label><div>${formatDate(x.from)}</div></div><div class="detail"><label>To</label><div>${formatDate(x.to)}</div></div><div class="detail"><label>Days</label><div>${x.days}</div></div><div class="detail"><label>Reason</label><div>${x.reason}</div></div></div>`;$("detail-modal").classList.add("open")};
-window.closeModal=()=>$("detail-modal").classList.remove("open");
+function apply(){
+  const today=new Date().toISOString().slice(0,10);
+  return `<h2>Apply for leave</h2><div class="panel narrow">
+  <label for="a-type">Leave type</label><select id="a-type">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v} (${me.balances?.[k]??0} left)</option>`).join("")}</select>
+  <div class="row"><div><label for="a-from">From</label><input id="a-from" type="date" min="${today}"></div><div><label for="a-to">To</label><input id="a-to" type="date" min="${today}"></div></div>
+  <label for="a-reason">Reason</label><textarea id="a-reason" rows="3"></textarea>
+  <button class="btn" id="a-go" style="margin-top:16px">Submit request</button><div class="msg" id="a-msg" role="alert"></div></div>`;
+}
+const mine = () => `<h2>My leaves</h2><div class="panel">${table(leaves.filter(l=>l.uid===me.uid),false)}</div>`;
+const req = () => `<h2>Requests</h2><div class="panel">${table(leaves,true)}</div>`;
+function cal(){
+  const ok=leaves.filter(l=>l.status==="approved").sort((a,b)=>a.from.localeCompare(b.from));
+  return `<h2>Team calendar</h2><div class="panel">${ok.length?`<div class="tw"><table><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead><tbody>`+
+  ok.map(l=>`<tr><td>${esc(l.name)}</td><td>${TYPES[l.type]}</td><td>${fmt(l.from)}</td><td>${fmt(l.to)}</td><td>${l.days}</td></tr>`).join("")+`</tbody></table></div>`:`<p class="empty">No approved leave yet.</p>`}</div>`;
+}
+
+/* ---------- Actions ---------- */
+function bindApply(){
+  $("#a-go").onclick=async()=>{
+    const type=$("#a-type").value,from=$("#a-from").value,to=$("#a-to").value,reason=$("#a-reason").value.trim(),msg=$("#a-msg");
+    if(!from||!to||!reason){msg.textContent="Fill in the dates and a reason.";return;}
+    const days=Math.round((new Date(to)-new Date(from))/864e5)+1;
+    if(days<1){msg.textContent="The end date must be on or after the start date.";return;}
+    if(days>(me.balances?.[type]??0)){msg.textContent=`You only have ${me.balances?.[type]??0} ${TYPES[type].toLowerCase()} days left.`;return;}
+    $("#a-go").disabled=true;
+    try{
+      await addDoc(collection(db,"leaves"),{uid:me.uid,name:me.name,type,from,to,days,reason,status:"pending",createdAt:Date.now()});
+      toast("Request submitted"); view="mine"; render();
+    }catch(e){msg.textContent=friendly(e);$("#a-go").disabled=false;}
+  };
+}
+
+document.addEventListener("click",async e=>{
+  const t=e.target.closest("button"); if(!t||!me)return;
+  if(t.dataset.view){view=t.dataset.view;render();}
+  else if(t.id==="out"){signOut(auth);}
+  else if(t.dataset.cancel){
+    try{await updateDoc(doc(db,"leaves",t.dataset.cancel),{status:"cancelled"});toast("Request cancelled");}catch(x){toast(friendly(x));}
+  }
+  else if(t.dataset.act){
+    const l=leaves.find(x=>x.id===t.dataset.id); if(!l)return;
+    t.disabled=true;
+    try{
+      await updateDoc(doc(db,"leaves",l.id),{status:t.dataset.act,reviewedBy:me.name,reviewedAt:Date.now()});
+      if(t.dataset.act==="approved") await updateDoc(doc(db,"users",l.uid),{[`balances.${l.type}`]:increment(-l.days)});
+      toast(t.dataset.act==="approved"?"Request approved":"Request rejected");
+    }catch(x){toast(friendly(x));t.disabled=false;}
+  }
+});
+
+setMode("in");
+if(!auth) show("auth");
 </script>
 </body>
 </html>
