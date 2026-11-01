@@ -74,7 +74,7 @@ tr:last-child td{border-bottom:0}
     <label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email">
     <label for="f-pass">Password</label><input id="f-pass" type="password" autocomplete="current-password" placeholder="At least 6 characters">
     <div id="f-role-w" class="hide"><label for="f-role">Role</label>
-      <select id="f-role"><option value="employee">Employee</option><option value="manager">Manager</option></select></div>
+      <select id="f-role"><option value="employee">Employee</option><option value="manager">Manager</option><option value="hr">HR</option></select></div>
     <button id="f-go" class="btn" type="button">Sign in</button>
     <div id="f-msg" class="msg" role="alert"></div>
   </div>
@@ -93,15 +93,13 @@ import {getFirestore,doc,getDoc,setDoc,updateDoc,addDoc,collection,query,where,o
 
 // ===== 1. PASTE YOUR FIREBASE CONFIG HERE (Project settings > Your apps > Web) =====
 const firebaseConfig = {
-  apiKey: "AIzaSyCz_c4_nBmFCxSBdmebLeJWSxrwjgMr3nw",
-  authDomain: "leaveflow-prod-b23c4.firebaseapp.com",
-  databaseURL: "https://leaveflow-prod-b23c4-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "leaveflow-prod-b23c4",
-  storageBucket: "leaveflow-prod-b23c4.firebasestorage.app",
-  messagingSenderId: "430317111824",
-  appId: "1:430317111824:web:19b7106e956709beb6d895"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
-
 // ==================================================================================
 
 const TYPES = {annual:"Annual",sick:"Sick",casual:"Casual"};
@@ -117,7 +115,8 @@ if (firebaseConfig.apiKey.startsWith("YOUR")) { $("#cfgwarn").classList.remove("
 const fb = firebaseConfig.apiKey.startsWith("YOUR") ? null : initializeApp(firebaseConfig);
 const auth = fb && getAuth(fb), db = fb && getFirestore(fb);
 
-let me = null, leaves = [], view = "dash", unsub = null, signingUp = false, mode = "in";
+const ROLES = {employee:"Employee",manager:"Manager",hr:"HR"};
+let me = null, leaves = [], users = [], view = "dash", unsub = null, unsubU = null, signingUp = false, mode = "in";
 
 /* ---------- Auth screen ---------- */
 function setMode(m){
@@ -159,7 +158,7 @@ function friendly(e){
 /* ---------- Session ---------- */
 if(auth) onAuthStateChanged(auth, async u => {
   if(signingUp) return;
-  if(!u){ if(unsub)unsub(); me=null; show("auth"); return; }
+  if(!u){ if(unsub)unsub(); if(unsubU)unsubU(); me=null; show("auth"); return; }
   await boot(u);
 });
 
@@ -174,7 +173,9 @@ async function boot(u){
 // Single-field queries only, so no composite indexes are needed. Sorting happens in the browser.
 function listen(){
   if(unsub)unsub();
-  const q = me.role==="manager" ? collection(db,"leaves") : query(collection(db,"leaves"),where("uid","==",me.uid));
+  if(unsubU)unsubU();
+  if(isHR()) unsubU=onSnapshot(collection(db,"users"),s=>{users=s.docs.map(d=>({uid:d.id,...d.data()}));render();});
+  const q = me.role!=="employee" ? collection(db,"leaves") : query(collection(db,"leaves"),where("uid","==",me.uid));
   unsub=onSnapshot(q,async s=>{
     leaves=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt);
     const fresh=await getDoc(doc(db,"users",me.uid)); if(fresh.exists()) me={uid:me.uid,...fresh.data()};
@@ -184,15 +185,17 @@ function listen(){
 
 /* ---------- Views ---------- */
 const mgr = () => me.role==="manager";
+const isHR = () => me.role==="hr";
 const pendingCount = () => leaves.filter(l=>l.status==="pending").length;
 
 function render(){
   const nav=[["dash","Dashboard"],["apply","Apply for leave"],["mine","My leaves"]];
   if(mgr()) nav.push(["req","Requests",pendingCount()],["cal","Team calendar"]);
+  if(isHR()) nav.push(["all","All requests"],["emp","Employees"]);
   $("#side").innerHTML=`<div class="logo">LeaveFlow</div>`+nav.map(([k,l,n])=>
     `<button class="nav ${view===k?"on":""}" data-view="${k}">${l}${n?`<span class="badge">${n}</span>`:""}</button>`).join("")+
-    `<div class="who"><b>${esc(me.name)}</b>${mgr()?"Manager":"Employee"}<br><button class="btn ghost sm" id="out" style="margin-top:8px">Sign out</button></div>`;
-  $("#main").innerHTML=({dash,apply,mine,req,cal})[view]();
+    `<div class="who"><b>${esc(me.name)}</b>${ROLES[me.role]}<br><button class="btn ghost sm" id="out" style="margin-top:8px">Sign out</button></div>`;
+  $("#main").innerHTML=({dash,apply,mine,req,cal,all,emp})[view]();
   if(view==="apply") bindApply();
 }
 
@@ -204,13 +207,13 @@ function dash(){
   <div class="panel"><b>Recent requests</b>${table(mine.slice(0,5),false)}</div>`;
 }
 
-function table(list,withActions){
+function table(list,withActions,showName=withActions){
   if(!list.length) return `<p class="empty">Nothing here yet.</p>`;
-  return `<div class="tw"><table><thead><tr>${withActions?"<th>Employee</th>":""}<th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>`+
-  list.map(l=>`<tr>${withActions?`<td>${esc(l.name)}</td>`:""}<td>${TYPES[l.type]}</td><td>${fmt(l.from)} to ${fmt(l.to)}</td><td>${l.days}</td><td>${esc(l.reason)}</td><td>${pill(l.status)}</td>
+  return `<div class="tw"><table><thead><tr>${showName?"<th>Employee</th>":""}<th>Type</th><th>Dates</th><th>Days</th><th>Reason</th><th>Status</th><th></th></tr></thead><tbody>`+
+  list.map(l=>`<tr>${showName?`<td>${esc(l.name)}</td>`:""}<td>${TYPES[l.type]}</td><td>${fmt(l.from)} to ${fmt(l.to)}</td><td>${l.days}</td><td>${esc(l.reason)}</td><td>${pill(l.status)}</td>
   <td><div class="acts">${
     withActions&&l.status==="pending" ? `<button class="btn ok sm" data-act="approved" data-id="${l.id}">Approve</button><button class="btn no sm" data-act="rejected" data-id="${l.id}">Reject</button>`
-    : !withActions&&l.status==="pending" ? `<button class="btn ghost sm" data-cancel="${l.id}">Cancel</button>` : ""}</div></td></tr>`).join("")+`</tbody></table></div>`;
+    : !withActions&&l.status==="pending"&&l.uid===me.uid ? `<button class="btn ghost sm" data-cancel="${l.id}">Cancel</button>` : ""}</div></td></tr>`).join("")+`</tbody></table></div>`;
 }
 
 function apply(){
@@ -223,6 +226,14 @@ function apply(){
 }
 const mine = () => `<h2>My leaves</h2><div class="panel">${table(leaves.filter(l=>l.uid===me.uid),false)}</div>`;
 const req = () => `<h2>Requests</h2><div class="panel">${table(leaves,true)}</div>`;
+const all = () => `<h2>All requests</h2><div class="panel">${table(leaves,false,true)}</div>`;
+function emp(){
+  const rows=[...users].sort((a,b)=>a.name.localeCompare(b.name)).map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td>
+  <td><select data-role="${u.uid}" aria-label="Role for ${esc(u.name)}" ${u.uid===me.uid?"disabled":""}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${u.role===k?"selected":""}>${v}</option>`).join("")}</select></td>
+  <td>${u.balances?.annual??0} / ${u.balances?.sick??0} / ${u.balances?.casual??0}</td>
+  <td><button class="btn ghost sm" data-reset="${u.uid}">Reset balances</button></td></tr>`).join("");
+  return `<h2>Employees</h2><div class="panel"><div class="tw"><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Balances (annual / sick / casual)</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
 function cal(){
   const ok=leaves.filter(l=>l.status==="approved").sort((a,b)=>a.from.localeCompare(b.from));
   return `<h2>Team calendar</h2><div class="panel">${ok.length?`<div class="tw"><table><thead><tr><th>Employee</th><th>Type</th><th>From</th><th>To</th><th>Days</th></tr></thead><tbody>`+
@@ -252,6 +263,9 @@ document.addEventListener("click",async e=>{
   else if(t.dataset.cancel){
     try{await updateDoc(doc(db,"leaves",t.dataset.cancel),{status:"cancelled"});toast("Request cancelled");}catch(x){toast(friendly(x));}
   }
+  else if(t.dataset.reset){
+    try{await updateDoc(doc(db,"users",t.dataset.reset),{balances:{...START}});toast("Balances reset");}catch(x){toast(friendly(x));}
+  }
   else if(t.dataset.act){
     const l=leaves.find(x=>x.id===t.dataset.id); if(!l)return;
     t.disabled=true;
@@ -261,6 +275,11 @@ document.addEventListener("click",async e=>{
       toast(t.dataset.act==="approved"?"Request approved":"Request rejected");
     }catch(x){toast(friendly(x));t.disabled=false;}
   }
+});
+
+document.addEventListener("change",async e=>{
+  const sel=e.target.closest("[data-role]"); if(!sel)return;
+  try{await updateDoc(doc(db,"users",sel.dataset.role),{role:sel.value});toast("Role updated");}catch(x){toast(friendly(x));}
 });
 
 setMode("in");
