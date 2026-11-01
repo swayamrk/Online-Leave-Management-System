@@ -74,7 +74,7 @@ tr:last-child td{border-bottom:0}
     <label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email">
     <label for="f-pass">Password</label><input id="f-pass" type="password" autocomplete="current-password" placeholder="At least 6 characters">
     <div id="f-role-w" class="hide"><label for="f-role">Role</label>
-      <select id="f-role"><option value="employee">Employee</option><option value="manager">Manager</option><option value="hr">HR</option></select></div>
+      <select id="f-role"><option value="employee">Employee</option><option value="hr">HR</option></select></div>
     <button id="f-go" class="btn" type="button">Sign in</button>
     <div id="f-msg" class="msg" role="alert"></div>
   </div>
@@ -93,13 +93,12 @@ import {getFirestore,doc,getDoc,setDoc,updateDoc,addDoc,collection,query,where,o
 
 // ===== 1. PASTE YOUR FIREBASE CONFIG HERE (Project settings > Your apps > Web) =====
 const firebaseConfig = {
-  apiKey: "AIzaSyCz_c4_nBmFCxSBdmebLeJWSxrwjgMr3nw",
-  authDomain: "leaveflow-prod-b23c4.firebaseapp.com",
-  databaseURL: "https://leaveflow-prod-b23c4-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "leaveflow-prod-b23c4",
-  storageBucket: "leaveflow-prod-b23c4.firebasestorage.app",
-  messagingSenderId: "430317111824",
-  appId: "1:430317111824:web:19b7106e956709beb6d895"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 // ==================================================================================
 
@@ -116,7 +115,7 @@ if (firebaseConfig.apiKey.startsWith("YOUR")) { $("#cfgwarn").classList.remove("
 const fb = firebaseConfig.apiKey.startsWith("YOUR") ? null : initializeApp(firebaseConfig);
 const auth = fb && getAuth(fb), db = fb && getFirestore(fb);
 
-const ROLES = {employee:"Employee",manager:"Manager",hr:"HR"};
+const ROLES = {employee:"Employee",hr:"HR"};
 let me = null, leaves = [], users = [], view = "dash", unsub = null, unsubU = null, signingUp = false, mode = "in";
 
 /* ---------- Auth screen ---------- */
@@ -176,7 +175,7 @@ function listen(){
   if(unsub)unsub();
   if(unsubU)unsubU();
   if(isHR()) unsubU=onSnapshot(collection(db,"users"),s=>{users=s.docs.map(d=>({uid:d.id,...d.data()}));render();});
-  const q = me.role!=="employee" ? collection(db,"leaves") : query(collection(db,"leaves"),where("uid","==",me.uid));
+  const q = isHR() ? collection(db,"leaves") : query(collection(db,"leaves"),where("uid","==",me.uid));
   unsub=onSnapshot(q,async s=>{
     leaves=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.createdAt-a.createdAt);
     const fresh=await getDoc(doc(db,"users",me.uid)); if(fresh.exists()) me={uid:me.uid,...fresh.data()};
@@ -185,25 +184,23 @@ function listen(){
 }
 
 /* ---------- Views ---------- */
-const mgr = () => me.role==="manager";
 const isHR = () => me.role==="hr";
 const pendingCount = () => leaves.filter(l=>l.status==="pending").length;
 
 function render(){
   const nav=[["dash","Dashboard"],["apply","Apply for leave"],["mine","My leaves"]];
-  if(mgr()) nav.push(["req","Requests",pendingCount()],["cal","Team calendar"]);
-  if(isHR()) nav.push(["all","All requests"],["emp","Employees"]);
+  if(isHR()) nav.push(["req","Requests",pendingCount()],["cal","Team calendar"],["emp","Employees"]);
   $("#side").innerHTML=`<div class="logo">LeaveFlow</div>`+nav.map(([k,l,n])=>
     `<button class="nav ${view===k?"on":""}" data-view="${k}">${l}${n?`<span class="badge">${n}</span>`:""}</button>`).join("")+
-    `<div class="who"><b>${esc(me.name)}</b>${ROLES[me.role]}<br><button class="btn ghost sm" id="out" style="margin-top:8px">Sign out</button></div>`;
-  $("#main").innerHTML=({dash,apply,mine,req,cal,all,emp})[view]();
+    `<div class="who"><b>${esc(me.name)}</b>${ROLES[me.role]||"Employee"}<br><button class="btn ghost sm" id="out" style="margin-top:8px">Sign out</button></div>`;
+  $("#main").innerHTML=({dash,apply,mine,req,cal,emp})[view]();
   if(view==="apply") bindApply();
 }
 
 function dash(){
   const mine=leaves.filter(l=>l.uid===me.uid);
   const bal=Object.keys(TYPES).map(k=>`<div class="stat"><div class="n">${me.balances?.[k]??0}</div><div class="l">${TYPES[k]} days left</div></div>`).join("");
-  const mgrStats=mgr()?`<div class="stat"><div class="n">${pendingCount()}</div><div class="l">Requests waiting</div></div>`:"";
+  const mgrStats=isHR()?`<div class="stat"><div class="n">${pendingCount()}</div><div class="l">Requests waiting</div></div>`:"";
   return `<h2>Hello, ${esc(me.name.split(" ")[0])}</h2><div class="stats">${bal}${mgrStats}</div>
   <div class="panel"><b>Recent requests</b>${table(mine.slice(0,5),false)}</div>`;
 }
@@ -227,7 +224,6 @@ function apply(){
 }
 const mine = () => `<h2>My leaves</h2><div class="panel">${table(leaves.filter(l=>l.uid===me.uid),false)}</div>`;
 const req = () => `<h2>Requests</h2><div class="panel">${table(leaves,true)}</div>`;
-const all = () => `<h2>All requests</h2><div class="panel">${table(leaves,false,true)}</div>`;
 function emp(){
   const rows=[...users].sort((a,b)=>a.name.localeCompare(b.name)).map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td>
   <td><select data-role="${u.uid}" aria-label="Role for ${esc(u.name)}" ${u.uid===me.uid?"disabled":""}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${u.role===k?"selected":""}>${v}</option>`).join("")}</select></td>
